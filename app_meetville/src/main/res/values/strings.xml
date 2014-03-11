@@ -4,7 +4,7 @@
     <string name="app_name">meetville</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="textForTopBarFragment">Sign Up for Free</string>
+    <string name="SignUpForFree">Sign Up for Free</string>
     <string name="registreButton">Register for Free Now</string>
     <string name="registrationText" >By registering with Meetville you accept our Terms of use, Cookie
     policy and confirm that you are 18 or older. We will never disclose your private information.</string>
@@ -16,5 +16,7 @@
     <string name="AgeOfPartner">Age of partner</string>
     <string name="Email">E-mail</string>
     <string name="Password">Password</string>
+    <string name="signIn">Already have an account? Sign in</string>
+    <string name="signInTopBar">Sign in</string>
 
 </resources>
