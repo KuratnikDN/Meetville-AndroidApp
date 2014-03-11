@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:fillViewport="false">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="TEST 3 Meanwhile Russian forces have strengthened their control over Crimea.  In a televised briefing with President Putin on Monday, Mr Lavrov said proposals made by Mr Kerry for a negotiated solution to the crisis are &quot;not suitable&quot; because they take &quot;the situation created by the coup as a starting point&quot;, referring to the overthrow of Ukraine's pro-Russian President, Viktor Yanukovych.  Continue reading the main story Fact box: Awacs  File photo of an Awacs plane Airborne warning and control systems, or Awacs, are one of Nato's most sophisticated command and control aircraft Plane is a modified Boeing 707/320B airliner Contains a radar system that can detect, identify and track enemy aircraft, and direct fighters to meet them, from the ground up into the stratosphere Flight crew of four plus mission crew of 13-19 Also used by the US, Britain and France Flying with the E-3D AWACS crew Fact file: E-3 Sentry AWACS Washington says that there has been no official response yet to a set of questions Mr Kerry gave Mr Lavrov at the weekend, asking in particular whether Moscow is prepared to meet officials from the new Ukrainian government.  &quot;The United States needs to see concrete evidence that Russia is prepared to engage on the diplomatic proposals we have made to facilitate direct dialogue between Ukraine and Russia and to use international mechanisms like a contact group to deescalate the conflict,&quot; State Department spokeswoman Jen Psaki said in a recent written statement.  &quot;Kerry made clear to Foreign Minister Lavrov that he would welcome further discussions focused on how to de-escalate the crisis in Ukraine if and when we see concrete evidence that Russia is prepared to engage on these proposals,&quot; Ms Psaki said.  She said &quot;it was conceivable&quot; that Mr Kerry might meet Mr Lavrov prior to the planned Crimean referendum but the secretary of state first wanted to ensure that Moscow would engage seriously on US diplomatic proposals.  Staff threatened Meanwhile Nato on Monday announced that it is to deploy reconnaissance planes in Poland and Romania to monitor the Ukrainian crisis.  Continue reading the main story Analysis  image of Jonathan Marcus Jonathan Marcus BBC diplomatic correspondent The Awacs have some capacity to monitor vehicles on the ground but their chief mission will be reassurance. The flights will be mounted from bases in Germany and the United Kingdom.  An Alliance spokesman described the decision as &quot;an appropriate and responsible action in line with Nato's decision to intensify our ongoing assessment of the implications of this crisis for Alliance security&quot;.  The US has already sought to reassure its allies in Europe by adding six additional F-15 aircraft to the Nato air policing mission over the Baltic Republics and it is also despatching 12 F-16 fighters for a training exercise in Poland.  Also on Monday, armed men - said to be Russian troops and local militias - seized a military hospital in Crimea."
+                android:id="@+id/textViewPI"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
