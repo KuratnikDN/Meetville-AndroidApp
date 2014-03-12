@@ -4,4 +4,5 @@
     <color name="CornflowerBlue">#1E90FF</color>
     <color name="background">#BEBEBE</color>
     <color name="white">#fffdf6ff</color>
+    <color name="Black">#000000</color>
 </resources>

@@ -10,24 +10,37 @@ import android.os.Bundle;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
 import java.util.regex.Pattern;
 
 public class RegistrationStep1 extends Activity implements View.OnClickListener {
-    TextView tvRegistrationText, tvIam, tvBirthday, tvLoockingFor, tvAgeOfPartner;
+    TextView tvRegistrationText, tvIam, tvBirthday, tvLoockingFor, tvAgeOfPartner, tvCity;
     RelativeLayout view;
     Button btnBirthday; //выбрать дату рождения
     Button btnIam, btnLoockingFor, btnAgeOfPartner;
+    Button btnRegistration;
     NumberPicker numberPickerIam, numberPickerFrom, numberPickerTo;
-    int myYear = 1990;
-    int myMonth = 11;
-    int myDay = 16;
-    int iam; //0 - man 1 - women
-    int from, to; // возраст партнера от и до
+    EditText editTextNickName, editTextEmail, editTextPassword;
+    //дата рождения, значения для барабанов по умолчанию
+    private int myYear = 1990;
+    private int myMonth = 11;
+    private int myDay = 16;
+    private int iam; //0 - man 1 - women
+    private int from, to; // возраст партнера от и до
+    private int lookingFor; //0 - мена 1 - вумена
+    private String nickname;
+    private String city;
+    private String email;
+    private String password;
+    private String tempAccountInfo;
+    private String iam_string;
+    private String lookingFor_string;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +66,20 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
                 break;
             case R.id.buttonAgeOfPartner:
                 showDialog(4);
+                break;
+            case R.id.buttonSignUpStep1: //кнопка регестрации "sign up" тут будет отправляться запрос на сервер и проверяться правильность заполнения полей
+                nickname = editTextNickName.getText().toString();
+                password = editTextPassword.getText().toString();
+                email = editTextEmail.getText().toString();
+                iam_string = tvIam.getText().toString();
+                lookingFor_string = tvLoockingFor.getText().toString();
+                city = tvCity.getText().toString();
+
+
+                tempAccountInfo = "nickname: " + nickname + " I am: " + iam_string + " Looking for: " + lookingFor_string +
+                        " Birthday: " + (myMonth+1)+"/"+myDay+"/"+myYear + " city: " + city + " Age of partner: " + from + "-" + to +
+                        " Email: " + email + " password: " + password;
+                Toast.makeText(this, tempAccountInfo, Toast.LENGTH_LONG).show();
                 break;
         }
     }
@@ -178,6 +205,12 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
         tvAgeOfPartner = (TextView) findViewById(R.id.textViewAgeOfPartner);
         btnAgeOfPartner = (Button) findViewById(R.id.buttonAgeOfPartner);
         btnAgeOfPartner.setOnClickListener(this);
+        btnRegistration = (Button) findViewById(R.id.buttonSignUpStep1);
+        btnRegistration.setOnClickListener(this);
+        editTextEmail = (EditText) findViewById(R.id.editTextEmail);
+        editTextNickName = (EditText) findViewById(R.id.editTextNickname);
+        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        tvCity = (TextView) findViewById(R.id.textViewCity);
     }
 
 }
