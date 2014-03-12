@@ -18,5 +18,8 @@
     <string name="Password">Password</string>
     <string name="signIn">Already have an account? Sign in</string>
     <string name="signInTopBar">Sign in</string>
+    <string name="prev">Prev</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
 
 </resources>

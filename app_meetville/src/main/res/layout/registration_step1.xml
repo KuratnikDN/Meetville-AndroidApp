@@ -16,7 +16,7 @@
         android:layout_centerHorizontal="true"
         tools:layout="@layout/topbar_signup_fragment" />
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent" android:background="@color/background">
 
@@ -25,7 +25,8 @@
             android:layout_height="match_parent"
             android:id="@+id/scrollView"
             android:layout_gravity="center_horizontal"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            android:layout_weight="1">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -375,5 +376,77 @@
 
         </ScrollView>
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/linearLayoutBot"
+            android:background="@color/background"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:visibility="gone"
+            android:layout_weight="1">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="35dp"
+                    android:text="@string/done"
+                    android:id="@+id/buttonDone"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="10dp"
+                    android:maxHeight="80dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/selector_from_button_regestration" />
+
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="35dp"
+                    android:text="@string/next"
+                    android:id="@+id/buttonNext"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/buttonDone"
+                    android:maxHeight="80dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/selector_from_button_regestration"
+                    android:layout_marginLeft="10dp" />
+
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="35dp"
+                    android:text="@string/prev"
+                    android:id="@+id/buttonDone"
+                    android:singleLine="false"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="10dp"
+                    android:maxHeight="80dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/selector_from_button_regestration" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_weight="5">
+
+                <NumberPicker
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/numberPickerIam"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true" />
+
+                </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>

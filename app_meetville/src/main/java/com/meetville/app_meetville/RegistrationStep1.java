@@ -11,6 +11,7 @@ import android.text.util.Linkify;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,8 +26,11 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
     Button btnBirthday; //выбрать дату рождения
     Button btnIam, btnLoockingFor, btnAgeOfPartner;
     Button btnRegistration;
+    Button btnDone;
     NumberPicker numberPickerIam, numberPickerFrom, numberPickerTo;
     EditText editTextNickName, editTextEmail, editTextPassword;
+    LinearLayout linearLayoutBot;
+
     //дата рождения, значения для барабанов по умолчанию
     private int myYear = 1990;
     private int myMonth = 11;
@@ -48,6 +52,7 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
         setContentView(R.layout.registration_step1);
         findWidgets();
         createLinks(); //Делаем ссылки в текстВью на активити
+        numberPickerIam();
     }
 
     //----------------------------------РЕАЛИЗАЦИЯ МЕТОДОВ------------------------------------//
@@ -59,7 +64,8 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
                 showDialog(1);
                 break;
             case R.id.buttonIam:
-                showDialog(2);
+                //showDialog(2);
+                linearLayoutBot.setVisibility(View.VISIBLE);
                 break;
             case R.id.buttonLoockingFor:
                 showDialog(3);
@@ -75,12 +81,16 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
                 lookingFor_string = tvLoockingFor.getText().toString();
                 city = tvCity.getText().toString();
 
-
                 tempAccountInfo = "nickname: " + nickname + " I am: " + iam_string + " Looking for: " + lookingFor_string +
                         " Birthday: " + (myMonth+1)+"/"+myDay+"/"+myYear + " city: " + city + " Age of partner: " + from + "-" + to +
                         " Email: " + email + " password: " + password;
                 Toast.makeText(this, tempAccountInfo, Toast.LENGTH_LONG).show();
                 break;
+                case R.id.buttonDone:
+                    iam = numberPickerIam.getValue();
+                    if(iam == 1)tvIam.setText("Man"); else tvIam.setText("Woman");
+                    linearLayoutBot.setVisibility(View.GONE);
+                    break;
         }
     }
 
@@ -211,6 +221,16 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
         editTextNickName = (EditText) findViewById(R.id.editTextNickname);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         tvCity = (TextView) findViewById(R.id.textViewCity);
+        linearLayoutBot = (LinearLayout) findViewById(R.id.linearLayoutBot);
+        btnDone = (Button) findViewById(R.id.buttonDone);
+        btnDone.setOnClickListener(this);
+    }
+
+    private void numberPickerIam(){
+        numberPickerIam = (NumberPicker) findViewById(R.id.numberPickerIam);
+        numberPickerIam.setMinValue(1); numberPickerIam.setMaxValue(2);
+        numberPickerIam.setWrapSelectorWheel(false);
+        numberPickerIam.setDisplayedValues(new String[]{"Man", "Woman"});
     }
 
 }
