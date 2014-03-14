@@ -38,4 +38,5 @@
         android:layout_above="@+id/buttonSignUp"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp" />
+
 </RelativeLayout>

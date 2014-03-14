@@ -1,14 +1,12 @@
 package com.meetville.app_meetville;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.DialogInterface.OnClickListener;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.util.Linkify;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -23,13 +21,16 @@ import java.util.regex.Pattern;
 public class RegistrationStep1 extends Activity implements View.OnClickListener {
     TextView tvRegistrationText, tvIam, tvBirthday, tvLoockingFor, tvAgeOfPartner, tvCity;
     RelativeLayout view;
-    Button btnBirthday; //выбрать дату рождения
-    Button btnIam, btnLoockingFor, btnAgeOfPartner;
     Button btnRegistration;
-    Button btnDone;
-    NumberPicker numberPickerIam, numberPickerFrom, numberPickerTo;
+    Button btnDone, btnPrev, btnNext;
+    NumberPicker numberPickerIam, numberPickerFrom, numberPickerTo, numberPickerLookingFor;
+    DatePicker datePicker;
     EditText editTextNickName, editTextEmail, editTextPassword;
-    LinearLayout linearLayoutBot;
+    LinearLayout linearLayoutIam, linearLayoutLookingFor, linearLayoutFromTo, linearLayoutBirthday;
+    LinearLayout linearLayoutPrevNextDone;
+    RelativeLayout rlIam, rlLookingFor, rlBirthday, rlFromTo;
+    LinearLayout lrNickname;
+
 
     //дата рождения, значения для барабанов по умолчанию
     private int myYear = 1990;
@@ -46,13 +47,19 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
     private String iam_string;
     private String lookingFor_string;
 
+   private int menuItems[];
+   private int currentMenuItem = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration_step1);
         findWidgets();
         createLinks(); //Делаем ссылки в текстВью на активити
+        menuItems = new int[]{0,1,2,3,4,5,6,7};
         numberPickerIam();
+        numberPickerLookingFor();
+        numberPickerFromTo();
     }
 
     //----------------------------------РЕАЛИЗАЦИЯ МЕТОДОВ------------------------------------//
@@ -60,18 +67,30 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
     //вызов диалога выбора даты рождения, по нажатию на пункт "birthday
     public void onClick(View v) {
         switch(v.getId()){
-            case R.id.buttonBirthday:
-                showDialog(1);
+            case R.id.nickname:
+                currentMenuItem = 0;
+                goneAllLayout(currentMenuItem);
+                setVisible(currentMenuItem);
                 break;
-            case R.id.buttonIam:
-                //showDialog(2);
-                linearLayoutBot.setVisibility(View.VISIBLE);
+            case R.id.iam:
+                currentMenuItem = 1;
+                goneAllLayout(currentMenuItem);
+                setVisible(currentMenuItem);
                 break;
-            case R.id.buttonLoockingFor:
-                showDialog(3);
+            case R.id.lookingFor:
+                currentMenuItem = 2;
+                goneAllLayout(currentMenuItem);
+                setVisible(currentMenuItem);
                 break;
-            case R.id.buttonAgeOfPartner:
-                showDialog(4);
+            case R.id.birthday:
+                currentMenuItem = 3;
+                goneAllLayout(currentMenuItem);
+                setVisible(currentMenuItem);
+                break;
+            case R.id.fromTo:
+                currentMenuItem = 5;
+                goneAllLayout(currentMenuItem);
+                setVisible(currentMenuItem);
                 break;
             case R.id.buttonSignUpStep1: //кнопка регестрации "sign up" тут будет отправляться запрос на сервер и проверяться правильность заполнения полей
                 nickname = editTextNickName.getText().toString();
@@ -86,93 +105,25 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
                         " Email: " + email + " password: " + password;
                 Toast.makeText(this, tempAccountInfo, Toast.LENGTH_LONG).show();
                 break;
-                case R.id.buttonDone:
-                    iam = numberPickerIam.getValue();
-                    if(iam == 1)tvIam.setText("Man"); else tvIam.setText("Woman");
-                    linearLayoutBot.setVisibility(View.GONE);
-                    break;
+            case R.id.buttonDone:
+                setValue(currentMenuItem);
+                break;
+            case R.id.buttonNext:
+                setValue(currentMenuItem);
+                if( currentMenuItem < 7)currentMenuItem++;
+                else currentMenuItem = 0;
+                setVisible(currentMenuItem);
+                break;
+            case R.id.buttonPrev:
+                setValue(currentMenuItem);
+                if(currentMenuItem > 0) currentMenuItem--;
+                else currentMenuItem = 7;
+                setVisible(currentMenuItem);
+                break;
         }
     }
 
     //---------------------------------------ЛОГИКА КЛАССА-------------------------------------//
-
-    //вызываем диалог выбора даты рождения
-    protected Dialog onCreateDialog(int id) {
-        if (id == 1) {
-            DatePickerDialog tpd = new DatePickerDialog(this, myCallBack, myYear, myMonth, myDay);
-            return tpd;
-        }
-        else if(id == 2){
-            AlertDialog.Builder adb = new AlertDialog.Builder(this);
-            adb.setTitle("");
-            view = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_iam, null);
-            adb.setView(view);
-            adb.setPositiveButton("Done", myClickListenerIam);
-            return adb.create();
-        }
-        else if(id == 3){
-            AlertDialog.Builder adb = new AlertDialog.Builder(this);
-            adb.setTitle("");
-            view = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_iam, null);
-            adb.setView(view);
-            adb.setPositiveButton("Done",myClickListenerLoockingFor);
-            return adb.create();
-        }
-        else if(id == 4){
-            AlertDialog.Builder adb = new AlertDialog.Builder(this);
-            adb.setTitle("");
-            view = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_age_of_partner, null);
-            adb.setView(view);
-            adb.setPositiveButton("Done",myClickListenerAgeOfPartner);
-            return adb.create();
-        }
-        return super.onCreateDialog(id);
-    }
-
-    DatePickerDialog.OnDateSetListener myCallBack = new DatePickerDialog.OnDateSetListener() {
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            myYear = year; myMonth = monthOfYear; myDay = dayOfMonth;
-            tvBirthday.setText((monthOfYear+1)+"/"+dayOfMonth+"/"+year);
-        }
-    };
-
-    //обработка нажатия кнопок в диалоге "Iam"
-    OnClickListener myClickListenerIam = new OnClickListener() {
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                // положительная кнопка
-                case Dialog.BUTTON_POSITIVE:
-                    iam = numberPickerIam.getValue();
-                    if(iam == 1)tvIam.setText("Man"); else tvIam.setText("Woman");
-                    break;
-            }}
-    };
-    //обработка нажатия кнопок в диалоге "LoockingFor"
-    OnClickListener myClickListenerLoockingFor = new OnClickListener() {
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                // положительная кнопка
-                case Dialog.BUTTON_POSITIVE:
-                    iam = numberPickerIam.getValue();
-                    if(iam == 1)tvLoockingFor.setText("Man"); else tvLoockingFor.setText("Woman");
-                    break;
-            }}
-    };
-    //обработка нажатия кнопок в диалоге "AgeOfPartner"
-    OnClickListener myClickListenerAgeOfPartner = new OnClickListener() {
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                // положительная кнопка
-                case Dialog.BUTTON_POSITIVE:
-                    from = numberPickerFrom.getValue();
-                    to = numberPickerTo.getValue();
-                    if(to < from){ int temp = from; from = to; to = temp; }
-                    tvAgeOfPartner.setText(""+ from + "-" + to);
-                    break;
-            }}
-    };
-
 
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
@@ -202,28 +153,40 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
     }
 
     private void findWidgets(){
-        btnBirthday = (Button) findViewById(R.id.buttonBirthday);
-        btnIam = (Button) findViewById(R.id.buttonIam);
-        btnIam.setOnClickListener(this);
-        btnBirthday.setOnClickListener(this);
+        lrNickname = (LinearLayout)findViewById(R.id.nickname);
+        lrNickname.setOnClickListener(this);
+        rlIam = (RelativeLayout) findViewById(R.id.iam);
+        rlLookingFor = (RelativeLayout) findViewById(R.id.lookingFor);
+        rlBirthday = (RelativeLayout) findViewById(R.id.birthday);
+        rlFromTo = (RelativeLayout) findViewById(R.id.fromTo);
+        datePicker = (DatePicker) findViewById(R.id.datePicker);
+        rlIam.setOnClickListener(this);
+        rlLookingFor.setOnClickListener(this);
+        rlBirthday.setOnClickListener(this);
+        rlFromTo.setOnClickListener(this);
+        linearLayoutBirthday = (LinearLayout) findViewById(R.id.linearLayoutBirthday);
+        linearLayoutFromTo = (LinearLayout) findViewById(R.id.linearLayoutAgeOfPartner);
+        linearLayoutLookingFor = (LinearLayout) findViewById(R.id.linearLayoutLookingFor);
+        linearLayoutIam = (LinearLayout)findViewById(R.id.LinareLayoutIam);
+        numberPickerLookingFor = (NumberPicker) findViewById(R.id.numberPickerLookingFor);
         tvRegistrationText = (TextView) findViewById(R.id.textViewWeb);
         tvBirthday = (TextView) findViewById(R.id.textViewBirthday);
         tvIam = (TextView) findViewById(R.id.textViewIam);
         tvLoockingFor = (TextView) findViewById(R.id.textViewLoockingFor);
-        btnLoockingFor = (Button) findViewById(R.id.buttonLoockingFor);
-        btnLoockingFor.setOnClickListener(this);
         tvAgeOfPartner = (TextView) findViewById(R.id.textViewAgeOfPartner);
-        btnAgeOfPartner = (Button) findViewById(R.id.buttonAgeOfPartner);
-        btnAgeOfPartner.setOnClickListener(this);
         btnRegistration = (Button) findViewById(R.id.buttonSignUpStep1);
         btnRegistration.setOnClickListener(this);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextNickName = (EditText) findViewById(R.id.editTextNickname);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         tvCity = (TextView) findViewById(R.id.textViewCity);
-        linearLayoutBot = (LinearLayout) findViewById(R.id.linearLayoutBot);
         btnDone = (Button) findViewById(R.id.buttonDone);
         btnDone.setOnClickListener(this);
+        linearLayoutPrevNextDone = (LinearLayout) findViewById(R.id.LinareLayoutPrevNextDone);
+        btnNext = (Button) findViewById(R.id.buttonNext);
+        btnNext.setOnClickListener(this);
+        btnPrev = (Button) findViewById(R.id.buttonPrev);
+        btnPrev.setOnClickListener(this);
     }
 
     private void numberPickerIam(){
@@ -231,6 +194,162 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
         numberPickerIam.setMinValue(1); numberPickerIam.setMaxValue(2);
         numberPickerIam.setWrapSelectorWheel(false);
         numberPickerIam.setDisplayedValues(new String[]{"Man", "Woman"});
+    }
+
+    private void numberPickerLookingFor(){
+        numberPickerLookingFor = (NumberPicker) findViewById(R.id.numberPickerLookingFor);
+        numberPickerLookingFor.setMinValue(1); numberPickerLookingFor.setMaxValue(2);
+        numberPickerLookingFor.setWrapSelectorWheel(false);
+        numberPickerLookingFor.setDisplayedValues(new String[]{"Man", "Woman"});
+    }
+
+    private void numberPickerFromTo(){
+        numberPickerFrom = (NumberPicker) findViewById(R.id.numberPickerFrom);
+        numberPickerTo = (NumberPicker) findViewById(R.id.numberPickerTo);
+        numberPickerFrom.setMinValue(18); numberPickerFrom.setMaxValue(99);
+        numberPickerFrom.setWrapSelectorWheel(false);
+        numberPickerTo.setMinValue(18); numberPickerTo.setMaxValue(99);
+        numberPickerTo.setWrapSelectorWheel(false);
+    }
+
+    private void setVisible(int currentMenuItem){
+        switch(currentMenuItem){
+            case 0:
+                linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                showHideKeyboard(true);
+                break;
+            case 1:
+                linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                linearLayoutIam.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                linearLayoutLookingFor.setVisibility(View.VISIBLE);
+                break;
+            case 3:
+                linearLayoutBirthday.setVisibility(View.VISIBLE);
+                linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                break;
+            case 4:
+                linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                break;
+            case 5:
+                linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                linearLayoutFromTo.setVisibility(View.VISIBLE);
+                break;
+            case 6:
+                linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                break;
+            case 7:
+                linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    private void setValue(int currentMenuItem){
+        switch(currentMenuItem){
+            case 0:
+                nickname = editTextNickName.getText().toString();
+                linearLayoutPrevNextDone.setVisibility(View.GONE);
+                showHideKeyboard(false);
+                break;
+            case 1:
+                iam = numberPickerIam.getValue();
+                if(iam == 1)tvIam.setText("Man"); else tvIam.setText("Woman");
+                linearLayoutIam.setVisibility(View.GONE);
+                linearLayoutPrevNextDone.setVisibility(View.GONE);
+                break;
+            case 2:
+                lookingFor = numberPickerLookingFor.getValue();
+                iam = numberPickerIam.getValue();
+                if(lookingFor == 1)tvLoockingFor.setText("Man"); else tvLoockingFor.setText("Woman");
+                linearLayoutLookingFor.setVisibility(View.GONE);
+                linearLayoutPrevNextDone.setVisibility(View.GONE);
+                break;
+            case 3:
+                myDay = datePicker.getDayOfMonth();
+                myMonth = datePicker.getMonth();
+                myYear = datePicker.getYear();
+                tvBirthday.setText((myMonth+1)+"/"+myDay+"/"+myYear);
+                linearLayoutBirthday.setVisibility(View.GONE);
+                linearLayoutPrevNextDone.setVisibility(View.GONE);
+                break;
+            case 4:
+                break;
+            case 5:
+                from = numberPickerFrom.getValue();
+                to = numberPickerTo.getValue();
+                //если от > чем до, то меняем местами, иначе будет 22-18, а нужно 18-22
+                if(to < from){ int temp = from; from = to; to = temp; }
+                tvAgeOfPartner.setText(""+ from + "-" + to);
+                linearLayoutFromTo.setVisibility(View.GONE);
+                linearLayoutPrevNextDone.setVisibility(View.GONE);
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+        }
+    }
+
+    private void goneAllLayout(int currentMenuItem){
+        switch(currentMenuItem){
+            case 0:
+                linearLayoutIam.setVisibility(View.GONE);
+                linearLayoutLookingFor.setVisibility(View.GONE);
+                linearLayoutBirthday.setVisibility(View.GONE);
+                linearLayoutFromTo.setVisibility(View.GONE);
+                break;
+            case 1:
+                linearLayoutLookingFor.setVisibility(View.GONE);
+                linearLayoutBirthday.setVisibility(View.GONE);
+                linearLayoutFromTo.setVisibility(View.GONE);
+                break;
+            case 2:
+                linearLayoutIam.setVisibility(View.GONE);
+                linearLayoutBirthday.setVisibility(View.GONE);
+                linearLayoutFromTo.setVisibility(View.GONE);
+                break;
+            case 3:
+                linearLayoutIam.setVisibility(View.GONE);
+                linearLayoutLookingFor.setVisibility(View.GONE);
+                linearLayoutFromTo.setVisibility(View.GONE);
+                break;
+            case 4:
+                linearLayoutIam.setVisibility(View.GONE);
+                linearLayoutLookingFor.setVisibility(View.GONE);
+                linearLayoutBirthday.setVisibility(View.GONE);
+                linearLayoutFromTo.setVisibility(View.GONE);
+                break;
+            case 5:
+                linearLayoutIam.setVisibility(View.GONE);
+                linearLayoutLookingFor.setVisibility(View.GONE);
+                linearLayoutBirthday.setVisibility(View.GONE);
+                break;
+            case 6:
+                linearLayoutIam.setVisibility(View.GONE);
+                linearLayoutLookingFor.setVisibility(View.GONE);
+                linearLayoutBirthday.setVisibility(View.GONE);
+                linearLayoutFromTo.setVisibility(View.GONE);
+                break;
+            case 7:
+                linearLayoutIam.setVisibility(View.GONE);
+                linearLayoutLookingFor.setVisibility(View.GONE);
+                linearLayoutBirthday.setVisibility(View.GONE);
+                linearLayoutFromTo.setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    private void showHideKeyboard(boolean param){
+            EditText edtText = (EditText) this.getCurrentFocus();
+            InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if(param){
+            inputMethodManager.toggleSoftInput(0, 0);
+            edtText.setSelection(edtText.getText().length());
+            }
+        else inputMethodManager.hideSoftInputFromWindow(edtText.getWindowToken(), 0);
+
     }
 
 }
