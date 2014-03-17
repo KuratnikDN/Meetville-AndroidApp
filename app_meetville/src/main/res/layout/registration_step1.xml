@@ -65,15 +65,17 @@
                             android:layout_gravity="center_vertical" />
 
                         <EditText
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/editTextNickname"
-                            android:singleLine="true"
+                            android:id="@+id/editTextNickName"
+                            android:layout_marginTop="5dp"
                             android:textSize="15dp"
                             android:gravity="right"
-                            android:focusable="true"
-                            android:textIsSelectable="false"
-                            android:textColor="@color/Black" />
+                            android:textColor="@color/Black"
+                            android:layout_weight="1"
+                            android:inputType="text">
+                        </EditText>
+
                     </LinearLayout>
 
                     <ImageView
@@ -254,7 +256,8 @@
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="50dp"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:id="@+id/email">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -288,7 +291,8 @@
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
-                        android:layout_height="40dp">
+                        android:layout_height="40dp"
+                        android:id="@+id/password">
 
                         <TextView
                             android:layout_width="wrap_content"

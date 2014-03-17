@@ -3,6 +3,8 @@ package com.meetville.app_meetville;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.util.Linkify;
 import android.view.View;
@@ -19,8 +21,7 @@ import android.widget.Toast;
 import java.util.regex.Pattern;
 
 public class RegistrationStep1 extends Activity implements View.OnClickListener {
-    TextView tvRegistrationText, tvIam, tvBirthday, tvLoockingFor, tvAgeOfPartner, tvCity;
-    RelativeLayout view;
+    TextView tvRegistrationText, tvIam, tvBirthday, tvLoockingFor, tvAgeOfPartner, tvCity;;
     Button btnRegistration;
     Button btnDone, btnPrev, btnNext;
     NumberPicker numberPickerIam, numberPickerFrom, numberPickerTo, numberPickerLookingFor;
@@ -29,7 +30,7 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
     LinearLayout linearLayoutIam, linearLayoutLookingFor, linearLayoutFromTo, linearLayoutBirthday;
     LinearLayout linearLayoutPrevNextDone;
     RelativeLayout rlIam, rlLookingFor, rlBirthday, rlFromTo;
-    LinearLayout lrNickname;
+    LinearLayout lrNickname, lrEmail, lrPassword;
 
 
     //дата рождения, значения для барабанов по умолчанию
@@ -47,7 +48,6 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
     private String iam_string;
     private String lookingFor_string;
 
-   private int menuItems[];
    private int currentMenuItem = 1;
 
     @Override
@@ -56,7 +56,6 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
         setContentView(R.layout.registration_step1);
         findWidgets();
         createLinks(); //Делаем ссылки в текстВью на активити
-        menuItems = new int[]{0,1,2,3,4,5,6,7};
         numberPickerIam();
         numberPickerLookingFor();
         numberPickerFromTo();
@@ -67,6 +66,14 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
     //вызов диалога выбора даты рождения, по нажатию на пункт "birthday
     public void onClick(View v) {
         switch(v.getId()){
+            case R.id.email:
+                currentMenuItem = 6;
+                goneAllLayout(currentMenuItem);
+                setVisible(currentMenuItem);
+            case R.id.password:
+                currentMenuItem = 7;
+                goneAllLayout(currentMenuItem);
+                setVisible(currentMenuItem);
             case R.id.nickname:
                 currentMenuItem = 0;
                 goneAllLayout(currentMenuItem);
@@ -88,7 +95,7 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
                 setVisible(currentMenuItem);
                 break;
             case R.id.fromTo:
-                currentMenuItem = 5;
+                currentMenuItem = 4;
                 goneAllLayout(currentMenuItem);
                 setVisible(currentMenuItem);
                 break;
@@ -110,38 +117,20 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
                 break;
             case R.id.buttonNext:
                 setValue(currentMenuItem);
-                if( currentMenuItem < 7)currentMenuItem++;
-                else currentMenuItem = 0;
+                if( currentMenuItem < 4)currentMenuItem++;
+                else currentMenuItem = 1;
                 setVisible(currentMenuItem);
                 break;
             case R.id.buttonPrev:
                 setValue(currentMenuItem);
-                if(currentMenuItem > 0) currentMenuItem--;
-                else currentMenuItem = 7;
+                if(currentMenuItem > 1) currentMenuItem--;
+                else currentMenuItem = 4;
                 setVisible(currentMenuItem);
-                break;
+            break;
         }
     }
 
     //---------------------------------------ЛОГИКА КЛАССА-------------------------------------//
-
-    @Override
-    protected void onPrepareDialog(int id, Dialog dialog) {
-        super.onPrepareDialog(id, dialog);
-        if (id == 2 || id == 3) {
-            numberPickerIam = (NumberPicker) dialog.getWindow().findViewById(R.id.numberPickerIam);
-            numberPickerIam.setMinValue(1); numberPickerIam.setMaxValue(2);
-            numberPickerIam.setWrapSelectorWheel(false);
-            numberPickerIam.setDisplayedValues(new String[]{"Man", "Woman"});
-        }
-        if (id == 4) {
-            numberPickerFrom = (NumberPicker) dialog.getWindow().findViewById(R.id.numberPickerFrom);
-            numberPickerTo = (NumberPicker) dialog.getWindow().findViewById(R.id.numberPickerTo);
-            numberPickerFrom.setMinValue(18); numberPickerFrom.setMaxValue(99);
-            numberPickerTo.setMinValue(18); numberPickerTo.setMaxValue(99);
-            numberPickerFrom.setWrapSelectorWheel(false); numberPickerTo.setWrapSelectorWheel(false);
-        }
-    }
 
     private void createLinks(){
         Pattern pattern1 = Pattern.compile("Terms of use");
@@ -156,6 +145,10 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
         lrNickname = (LinearLayout)findViewById(R.id.nickname);
         lrNickname.setOnClickListener(this);
         rlIam = (RelativeLayout) findViewById(R.id.iam);
+        lrEmail = (LinearLayout) findViewById(R.id.email);
+        lrPassword = (LinearLayout) findViewById(R.id.password);
+        lrEmail.setOnClickListener(this);
+        lrPassword.setOnClickListener(this);
         rlLookingFor = (RelativeLayout) findViewById(R.id.lookingFor);
         rlBirthday = (RelativeLayout) findViewById(R.id.birthday);
         rlFromTo = (RelativeLayout) findViewById(R.id.fromTo);
@@ -177,7 +170,7 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
         btnRegistration = (Button) findViewById(R.id.buttonSignUpStep1);
         btnRegistration.setOnClickListener(this);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-        editTextNickName = (EditText) findViewById(R.id.editTextNickname);
+        editTextNickName = (EditText) findViewById(R.id.editTextNickName);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         tvCity = (TextView) findViewById(R.id.textViewCity);
         btnDone = (Button) findViewById(R.id.buttonDone);
@@ -187,6 +180,9 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
         btnNext.setOnClickListener(this);
         btnPrev = (Button) findViewById(R.id.buttonPrev);
         btnPrev.setOnClickListener(this);
+        editTextNickName.setOnClickListener(this);
+        editTextEmail.setOnClickListener(this);
+        editTextPassword.setOnClickListener(this);
     }
 
     private void numberPickerIam(){
@@ -215,7 +211,7 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
     private void setVisible(int currentMenuItem){
         switch(currentMenuItem){
             case 0:
-                linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                editTextNickName.requestFocus();
                 showHideKeyboard(true);
                 break;
             case 1:
@@ -232,16 +228,18 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
                 break;
             case 4:
                 linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                linearLayoutFromTo.setVisibility(View.VISIBLE);
                 break;
             case 5:
                 linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
-                linearLayoutFromTo.setVisibility(View.VISIBLE);
                 break;
             case 6:
-                linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                editTextEmail.requestFocus();
+                showHideKeyboard(true);
                 break;
             case 7:
-                linearLayoutPrevNextDone.setVisibility(View.VISIBLE);
+                editTextPassword.requestFocus();
+                showHideKeyboard(true);
                 break;
         }
     }
@@ -275,8 +273,6 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
                 linearLayoutPrevNextDone.setVisibility(View.GONE);
                 break;
             case 4:
-                break;
-            case 5:
                 from = numberPickerFrom.getValue();
                 to = numberPickerTo.getValue();
                 //если от > чем до, то меняем местами, иначе будет 22-18, а нужно 18-22
@@ -285,9 +281,17 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
                 linearLayoutFromTo.setVisibility(View.GONE);
                 linearLayoutPrevNextDone.setVisibility(View.GONE);
                 break;
+            case 5:
+                break;
             case 6:
+                email = editTextEmail.getText().toString();
+                linearLayoutPrevNextDone.setVisibility(View.GONE);
+                showHideKeyboard(false);
                 break;
             case 7:
+                password = editTextPassword.getText().toString();
+                linearLayoutPrevNextDone.setVisibility(View.GONE);
+                showHideKeyboard(false);
                 break;
         }
     }
@@ -304,27 +308,32 @@ public class RegistrationStep1 extends Activity implements View.OnClickListener 
                 linearLayoutLookingFor.setVisibility(View.GONE);
                 linearLayoutBirthday.setVisibility(View.GONE);
                 linearLayoutFromTo.setVisibility(View.GONE);
+                showHideKeyboard(false);
                 break;
             case 2:
                 linearLayoutIam.setVisibility(View.GONE);
                 linearLayoutBirthday.setVisibility(View.GONE);
                 linearLayoutFromTo.setVisibility(View.GONE);
+                showHideKeyboard(false);
                 break;
             case 3:
                 linearLayoutIam.setVisibility(View.GONE);
                 linearLayoutLookingFor.setVisibility(View.GONE);
                 linearLayoutFromTo.setVisibility(View.GONE);
+                showHideKeyboard(false);
                 break;
             case 4:
                 linearLayoutIam.setVisibility(View.GONE);
                 linearLayoutLookingFor.setVisibility(View.GONE);
                 linearLayoutBirthday.setVisibility(View.GONE);
                 linearLayoutFromTo.setVisibility(View.GONE);
+                showHideKeyboard(false);
                 break;
             case 5:
                 linearLayoutIam.setVisibility(View.GONE);
                 linearLayoutLookingFor.setVisibility(View.GONE);
                 linearLayoutBirthday.setVisibility(View.GONE);
+                showHideKeyboard(false);
                 break;
             case 6:
                 linearLayoutIam.setVisibility(View.GONE);
